@@ -1,0 +1,287 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package saudigreeninitiatives.newpackage;
+
+import java.util.Scanner;
+import java.util.ArrayList;
+
+/**
+ *
+ * @author Anas
+ */
+public class Solution {
+
+    /**
+     * @param args the line line arguments
+     */
+    public static void main(String[] args) {
+        // TODO code application logic here
+
+        ArrayList<String> commands = new ArrayList();
+        Scanner s = new Scanner(System.in);
+        List SingleLinkedList = new List();
+        int counter = 0;
+        while (counter < 50 && s.hasNextLine()) {
+            String line = s.nextLine();
+            if (line.isEmpty()) {
+                break;
+            }
+            commands.add(line);
+            counter++;
+        }
+
+        for (String line : commands) {
+            int command;
+            int memberID;
+            int iID;
+            int SGI_ID;
+            int investment;
+            String iName;
+            String[] strings = line.split("\\s+");
+            command = Integer.parseInt(strings[0]);
+
+            switch (command) {
+                case 1:
+                    memberID = Integer.parseInt(strings[1]);
+                    iID = Integer.parseInt(strings[2]);
+                    SGI_ID = Integer.parseInt(strings[3]);
+                    investment = Integer.parseInt(strings[4]);
+                    iName = strings[5] + " " + strings[6];
+                    SingleLinkedList.Insert(new Node(memberID, iID, SGI_ID, investment, iName, null));
+                    break;
+                case 2:
+                    iID = Integer.parseInt(strings[1]);
+                    SingleLinkedList.remove(iID);
+                    break;
+                case 3:
+                    iID = Integer.parseInt(strings[1]);
+                    System.out.println(SingleLinkedList.investment(iID));
+                    break;
+                case 4:
+                    memberID = Integer.parseInt(strings[1]);
+                    investment = Integer.parseInt(strings[2]);
+                    SingleLinkedList.addinv(memberID, investment);
+                    break;
+                case 5:
+                    iID = Integer.parseInt(strings[1]);
+                    SingleLinkedList.print1(iID);
+                    break;
+                case 6:
+                    SGI_ID = Integer.parseInt(strings[1]);
+                    SingleLinkedList.print2(SGI_ID);
+                    break;
+                case 7:
+                    memberID = Integer.parseInt(strings[1]);
+                    SingleLinkedList.print3(memberID);
+                    break;
+
+            }
+        }
+
+    }
+}
+
+class List {
+
+     Node head;
+     int size;
+
+    List() {
+        head = null;
+        size = 0;
+    }
+
+    boolean isEmpty() {
+        return size == 0;
+    }
+
+    void Insert(Node N) {
+        Node temp = new Node();
+
+        if (head == null) {
+            head = N;
+            size++;
+        } //head is not null
+        else if (N.investment > head.investment) {
+            temp = head;
+            head = N;
+            head.next = temp;
+            size++;
+            return;
+        } else {
+            Node prev = head;
+            temp = head.next;
+            while (temp != null) {
+                if (N.investment > temp.investment) {
+                    prev.next = N;
+                    N.next = temp;
+                }
+                prev = temp;
+                temp = temp.next;
+            }
+        }
+
+        size++;
+
+    }
+
+    int investment(int iID) {
+        int sum = 0;
+        Node temp = head;
+
+        while (temp != null) {
+            if (temp.iID == iID) {
+                sum += temp.investment;
+            }
+            temp = temp.next;
+        }
+        return Math.round(sum);
+    }
+
+    void remove(int iID) {
+        if (head == null) {
+            return;
+        }
+
+        if (head.iID == iID) {
+            head = head.next;
+            size--;
+            return;
+        }
+
+        Node prev = head;
+        Node temp = head.next;
+        while (temp != null) {
+            if (temp.iID == iID) {
+                //we found it!
+                prev.next = temp.next;
+                size--;
+                return;
+            }
+            prev = temp;
+            temp = temp.next;
+
+        }
+    }
+
+    void addinv(int memberID, int investment) {
+        Node temp = head;
+        while (temp != null) {
+            if (temp.memberID == memberID) {
+                temp.investment += investment;
+                break;
+            }
+            temp = temp.next;
+        }
+    }
+
+    void print1(int iID) {
+        Node temp = head;
+        while (temp != null) {
+            if (temp.iID == iID) {
+                System.out.println(temp.toString());
+            }
+            temp = temp.next;
+        }
+    }
+
+    void print2(int SGI_ID) {
+        Node temp = head;
+        while (temp != null) {
+            if (temp.SGI_ID == SGI_ID) {
+                System.out.println(temp.toString());
+            }
+            temp = temp.next;
+        }
+    }
+
+    void print3(int memberID) {
+        Node temp = head;
+        while (temp != null) {
+            if (temp.memberID == memberID) {
+                System.out.println(temp.toString());
+            }
+            temp = temp.next;
+        }
+    }
+
+}
+
+class Node {
+
+     int memberID;
+     int iID;
+     int SGI_ID;
+     int investment;
+     String iName;
+     Node next;
+
+
+     Node() {
+        next = null;
+    }
+
+     Node(int memberID, int iID, int SGI_ID, int investment, String iName, Node n) {
+        this.memberID = memberID;
+        this.iID = iID;
+        this.SGI_ID = SGI_ID;
+        this.investment = investment;
+        this.iName = iName;
+        this.next = n;
+    }
+
+     String memberStatus(){
+        String memberStatus = " ";
+        switch (this.SGI_ID) {
+            case 1:{
+                if (this.investment >= 80000) {
+                    memberStatus = "Gold";
+                } else if (this.investment >= 50000) {
+                    memberStatus = "Silver";
+                } else if (this.investment >= 20000) {
+                    memberStatus = "Bronze";
+                } else {
+                    memberStatus = "Blue";
+                }
+                break;
+        }
+            case 2:{
+                if (this.investment >= 30000) {
+                    memberStatus = "Gold";
+                } else if (this.investment >= 15000) {
+                    memberStatus = "Silver";
+                } else if (this.investment >= 5000) {
+                    memberStatus = "Bronze";
+                } else {
+                    memberStatus = "Blue";
+                }
+                break;
+        }
+            case 3:{
+                if (this.investment >= 50000) {
+                    memberStatus = "Gold";
+                } else if (this.investment >= 20000) {
+                    memberStatus = "Silver";
+                } else if (this.investment >= 10000) {
+                    memberStatus = "Bronze";
+                } else {
+                    memberStatus = "Blue";
+                }
+                break;
+        }
+        }
+        return memberStatus;
+    }
+    @Override
+     public String toString() {
+
+        return String.format(this.memberID + " " + this.iID + " " + this.SGI_ID + " " + this.investment + " " + this.iName + " " + this.memberStatus());
+
+    }
+
+}
+
+
